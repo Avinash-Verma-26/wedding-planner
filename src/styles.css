@@ -16,6 +16,9 @@
   --gold: #a77a31;
   --shadow-sm: 0 1px 2px rgba(54, 43, 32, 0.05), 0 8px 28px rgba(54, 43, 32, 0.06);
   --shadow-lg: 0 28px 80px rgba(39, 31, 25, 0.2);
+  --control-height: 44px;
+  --control-padding: 14px;
+  --field-gap: 8px;
 }
 
 * {
@@ -38,7 +41,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   color: inherit;
   font: inherit;
 }
@@ -54,7 +58,8 @@ button {
 
 button:focus-visible,
 input:focus-visible,
-select:focus-visible {
+select:focus-visible,
+textarea:focus-visible {
   outline: 3px solid rgba(170, 78, 57, 0.22);
   outline-offset: 2px;
 }
@@ -607,6 +612,7 @@ select:focus-visible {
   position: relative;
   display: flex;
   align-items: center;
+  margin: 0;
 }
 
 .property-select-wrap .select-dot {
@@ -617,12 +623,13 @@ select:focus-visible {
 
 .property-select-wrap select {
   min-width: 210px;
-  min-height: 38px;
-  padding: 0 34px 0 30px;
+  height: var(--control-height);
+  margin: 0;
+  padding: 0 40px 0 30px;
   color: #4f4a45;
   font-size: 12px;
   font-weight: 600;
-  background: #f8f5f0;
+  background-color: #f8f5f0;
   border: 1px solid #e2dbd1;
   border-radius: 7px;
 }
@@ -1024,7 +1031,7 @@ select:focus-visible {
 .finder-grid {
   display: grid;
   grid-template-columns: 1.35fr 1fr 0.9fr 0.9fr 1fr;
-  gap: 12px;
+  gap: 16px 14px;
 }
 
 .finder-grid label,
@@ -1033,20 +1040,25 @@ select:focus-visible {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 7px;
+  gap: var(--field-gap);
+  margin: 0;
   color: #5a554e;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 
-input,
-select {
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
   width: 100%;
-  height: 42px;
-  padding: 0 12px;
+  min-width: 0;
+  height: var(--control-height);
+  margin: 0;
+  padding: 0 var(--control-padding);
   color: #393531;
   font-size: 12px;
+  line-height: 1.35;
   background: #fff;
   border: 1px solid #dcd5cc;
   border-radius: 6px;
@@ -1054,12 +1066,27 @@ select {
   transition: border 140ms ease, box-shadow 140ms ease;
 }
 
-input::placeholder {
+select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1.5 5 5 5-5' fill='none' stroke='%2379726b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--control-padding) center;
+  background-size: 12px 8px;
+}
+
+input[type="date"] {
+  padding-right: 10px;
+}
+
+input::placeholder,
+textarea::placeholder {
   color: #aaa29a;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   border-color: #b68574;
   box-shadow: 0 0 0 3px rgba(170, 78, 57, 0.08);
 }
@@ -1885,14 +1912,14 @@ select:focus {
 }
 
 .modal form {
-  padding: 24px 27px 26px;
+  padding: 26px 27px 28px;
 }
 
 .form-grid,
 .two-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 15px;
+  gap: 18px 16px;
 }
 
 .full-field {
@@ -1914,7 +1941,33 @@ select:focus {
 }
 
 .currency-input input {
-  padding-left: 28px;
+  padding-right: var(--control-padding);
+  padding-left: 32px;
+}
+
+.colour-options {
+  display: flex;
+  min-height: var(--control-height);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.colour-options button {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  margin: 0;
+  padding: 0;
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #d7cfc5;
+}
+
+.colour-options button.selected {
+  box-shadow: 0 0 0 2px var(--ink);
 }
 
 .services-field {
@@ -1938,10 +1991,11 @@ select:focus {
 
 .service-options label {
   display: inline-flex;
-  min-height: 34px;
+  min-height: 36px;
   align-items: center;
-  gap: 6px;
-  padding: 0 10px;
+  gap: 7px;
+  margin: 0;
+  padding: 0 12px;
   color: #746d65;
   font-size: 9px;
   font-weight: 600;
@@ -1961,6 +2015,8 @@ select:focus {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: 0;
+  padding: 0;
   opacity: 0;
 }
 
@@ -2478,6 +2534,10 @@ select:focus {
   .modal form {
     padding-right: 18px;
     padding-left: 18px;
+  }
+
+  .modal form {
+    padding-bottom: 22px;
   }
 
   .form-grid,
