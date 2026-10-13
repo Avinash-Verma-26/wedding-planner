@@ -12,6 +12,9 @@ This document is the source of truth for the application structure. Read it befo
 ## Source layout
 
 ```text
+.github/
+  workflows/
+    deploy-pages.yml              Builds and deploys the site to GitHub Pages
 public/
   venue-images/                   Optimized static venue photography
 src/
@@ -80,5 +83,7 @@ Feature components never read or write local storage directly. Mutations flow up
 - React and Vite are the only runtime/build dependencies.
 - `npm run build` produces the static `dist/` directory.
 - Vite uses a relative base path so the build works from a subdirectory on static hosting.
+- A GitHub Actions workflow builds and deploys `dist/` to GitHub Pages after pushes to `master`; it can also be run manually.
+- The repository's GitHub Pages publishing source must be set to GitHub Actions.
 - Properties and bookings persist under `mandap-react-properties` and `mandap-react-bookings` in browser local storage.
 - There is no authentication, backend, shared database, or server-side rendering.
