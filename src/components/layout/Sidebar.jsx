@@ -15,6 +15,6 @@ export function Sidebar({ page, setPage, properties, selectedProperty, setSelect
       <button className={`property-nav ${page === "calendar" && selectedProperty === "all" ? "active" : ""}`} onClick={() => goCalendar("all")}><span>▦</span><span>All properties</span><span className="property-count">{properties.length}</span></button>
       {properties.map((property) => <button key={property.id} className={`property-nav ${page === "calendar" && selectedProperty === property.id ? "active" : ""}`} onClick={() => goCalendar(property.id)}><i className="property-dot" style={{ background: property.color }} /><span>{property.name}</span></button>)}
     </div>
-    <div className="sidebar-footer"><div className="help-card"><span className="help-icon">?</span><div><strong>Demo workspace</strong><small>Saved in this browser</small></div></div><div className="user-card"><span className="avatar">AK</span><div><strong>Arjun Kapoor</strong><small>Venue owner</small></div><span className="chevron">⌄</span></div></div>
+    <div className="sidebar-footer"><div className="help-card"><span className="help-icon">?</span><div><strong>Demo workspace</strong><small>Saved in this browser</small></div></div><div className="user-card"><span className="avatar">AB</span><div><strong>Aditya Bagai</strong><small>Venue Manager</small></div><span className="chevron">⌄</span></div></div>
   </aside>;
 }
