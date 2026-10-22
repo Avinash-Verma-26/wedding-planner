@@ -1,16 +1,39 @@
 import { getPropertyDetails } from "../../data/propertyDetails.js";
 import { longDate, shortDate, TODAY } from "../../utils/date.js";
 import { rupees, slotLabel } from "../../utils/booking.js";
+import { buildInquiryUrl } from "../../utils/inquiry.js";
 import { PropertyGallery } from "./PropertyGallery.jsx";
 
-export function PropertyDetailPage({ property, bookings, onBack, onCalendar }) {
+export function PropertyDetailPage({ property, bookings, onBack, onCalendar, notify }) {
   const details = getPropertyDetails(property);
   const propertyBookings = bookings.filter((booking) => booking.property === property.id).sort((a, b) => a.date.localeCompare(b.date));
   const pastEvents = propertyBookings.filter((booking) => booking.date < TODAY).reverse();
   const upcomingEvents = propertyBookings.filter((booking) => booking.date >= TODAY);
 
+  async function shareToClient() {
+    const url = buildInquiryUrl(property);
+    const shareData = { title: `${property.name} venue inquiry`, text: `Take a look at ${property.name} and share your event details.`, url };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        notify("Inquiry link shared.");
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      notify("Inquiry link copied — ready to send to your client.");
+    } catch {
+      window.prompt("Copy this inquiry link to share with your client:", url);
+    }
+  }
+
   return <section className="page-body property-detail-page">
-    <div className="detail-topbar"><button className="back-button" onClick={onBack}>← Back to properties</button><button className="primary-button" onClick={onCalendar}>View filtered calendar →</button></div>
+    <div className="detail-topbar"><button className="back-button" onClick={onBack}>← Back to properties</button><div className="detail-topbar-actions"><button className="secondary-button share-client-button" onClick={shareToClient}>↗ Share to client</button><button className="primary-button" onClick={onCalendar}>View filtered calendar →</button></div></div>
     <section className={`property-detail-hero ${details.image ? "has-image" : ""}`} style={details.image ? { backgroundImage: `linear-gradient(90deg, rgba(28, 25, 22, .72), rgba(28, 25, 22, .08)), url(${details.image})` } : { "--property-color": property.color }}>
       <div><p className="eyebrow">{details.setting.toUpperCase()} · {property.city.toUpperCase()}</p><h1>{property.name}</h1><p>{details.tagline}</p><div className="hero-facts"><span><strong>{property.capacity.toLocaleString("en-IN")}</strong> guests</span><span><strong>{property.services.length}</strong> services</span><span><strong>{propertyBookings.length}</strong> events</span></div></div>
     </section>

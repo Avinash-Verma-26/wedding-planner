@@ -28,11 +28,13 @@ src/
   utils/
     booking.js                   Availability, conflict, currency, and slot rules
     date.js                      Date keys, labels, and range calculations
+    inquiry.js                   Share-link creation and public property snapshot parsing
   components/
     layout/                      App-wide navigation and shell components
     shared/                      Reusable UI primitives such as Modal
   features/
     calendar/                    Calendar page, views, drawers, and booking form
+    inquiries/                   Client-facing shared property page and inquiry form
     properties/                  Property finder, cards, detail/gallery page, and property form
   main.jsx                       Browser entry point
   styles.css                     Shared design system and responsive styles
@@ -40,12 +42,13 @@ src/
 
 ## Data and state flow
 
-`App` owns the property collection, booking collection, active top-level page, selected property, and notifications. It passes data and explicit callbacks into the two feature pages.
+`App` owns the property collection, booking collection, inquiry collection, active top-level page, selected property, and notifications. It passes data and explicit callbacks into feature pages.
 
 ```text
 localStorage ↔ useStoredState ↔ App
                               ├─ CalendarPage → month/week/day views
-                              └─ PropertiesPage → finder/cards/editor → PropertyDetailPage
+                              ├─ PropertiesPage → finder/cards/editor → PropertyDetailPage
+                              └─ InquiryPage → public property snapshot + inquiry form
 ```
 
 Feature components never read or write local storage directly. Mutations flow upward through callbacks. Functional state updates are preferred so rapid actions cannot overwrite newer state.
@@ -57,6 +60,7 @@ Feature components never read or write local storage directly. Mutations flow up
 - Calendar views receive the focused date, filtered property scope, bookings, and callbacks. They do not own portfolio state.
 - `PropertyCard` is a presentation/action component. Selecting its main area opens the property detail page; its explicit calendar action opens a calendar already scoped to that property.
 - `PropertyDetailPage` derives past and upcoming events from the shared booking collection. Editorial copy and image metadata come from `data/propertyDetails.js`, with a reusable fallback for user-created properties.
+- Property detail pages create client links with the `inquiry` query parameter and a public property snapshot. `InquiryPage` is a standalone client view and never exposes bookings or manager navigation.
 - Project-bound venue photography lives in `public/venue-images`. Reference it with relative paths so static subdirectory hosting continues to work.
 - `Modal` owns shared dialog presentation and dismissal behavior. Feature forms own their fields and validation messages.
 - Options used by multiple features belong in `constants.js`. Demo-only records belong in `data/defaultData.js`.
@@ -85,5 +89,6 @@ Feature components never read or write local storage directly. Mutations flow up
 - Vite uses a relative base path so the build works from a subdirectory on static hosting.
 - A GitHub Actions workflow builds and deploys `dist/` to GitHub Pages after pushes to `master`; it can also be run manually.
 - The repository's GitHub Pages publishing source must be set to GitHub Actions.
-- Properties and bookings persist under `mandap-react-properties` and `mandap-react-bookings` in browser local storage.
+- Properties, bookings, and submitted inquiries persist under `mandap-react-properties`, `mandap-react-bookings`, and `mandap-react-inquiries` in browser local storage.
+- Shared inquiry links embed the public venue fields required to render in another browser. Inquiry submissions are local to the browser that submits them until a backend is introduced.
 - There is no authentication, backend, shared database, or server-side rendering.
